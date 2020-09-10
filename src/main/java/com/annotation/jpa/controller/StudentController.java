@@ -3,6 +3,8 @@ package com.annotation.jpa.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.annotation.jpa.dao.UserDao;
 import com.annotation.jpa.mapping.beans.Address;
 import com.annotation.jpa.mapping.beans.Marks;
 import com.annotation.jpa.mapping.beans.Student;
+import com.annotation.jpa.mapping.beans.User;
 import com.annotation.jpa.request.StudentRequest;
 import com.annotation.jpa.service.StudentServiceMysql;
 
@@ -25,6 +29,9 @@ public class StudentController {
 	
     @Autowired
 	private StudentServiceMysql studentSqlService;
+    
+    @Autowired
+    private UserDao userDao;
 	
 	@ResponseBody
 	@RequestMapping(value="/student/{id}", method=RequestMethod.GET)
@@ -53,5 +60,10 @@ public class StudentController {
 		student.setMarks(markList);
 		Student studentResp=studentSqlService.submitStudent(student);
 		return new ResponseEntity<Student>(studentResp,HttpStatus.OK);
+	}
+	@RequestMapping(value="/users",method=RequestMethod.POST)
+	public ResponseEntity<String> saveUser(@Valid @RequestBody User user){
+		String response=userDao.saveUserDetails(user);
+		return new ResponseEntity<String>(response,HttpStatus.OK);
 	}
 }
